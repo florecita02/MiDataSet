@@ -1,0 +1,31 @@
+import psutil
+import csv
+import time
+
+def monitor_memory_usage(duration, interval):
+    # Abre el archivo CSV para escribir
+    with open('memory_usage.csv', mode='w', newline='') as file:
+        writer = csv.writer(file)
+        # Escribe el encabezado del archivo CSV
+        writer.writerow(['Tiempo', 'Uso de Memoria (MB)'])
+
+        # Itera durante la duración especificada
+        end_time = time.time() + duration
+        while time.time() < end_time:
+            # Obtiene el uso actual de la memoria
+            memory_usage = psutil.virtual_memory().used / (1024 * 1024)  # Convertir a MB
+            current_time = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())
+            
+            # Escribe el tiempo y el uso de memoria en el archivo CSV
+            writer.writerow([current_time, round(memory_usage, 2)])
+            print(f'Tiempo: {current_time}, Uso de Memoria: {memory_usage} MB')
+
+            time.sleep(interval)
+
+if __name__ == "__main__":
+    # Duración en segundos para monitorear la memoria
+    duration = 60 * 5  # 5 minutos
+    # Intervalo de tiempo entre cada medición en segundos
+    interval = 5  # 5 segundos
+
+    monitor_memory_usage(duration, interval)
